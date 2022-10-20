@@ -1,0 +1,21 @@
+{% extends 'main_twitter/base.html' %}
+{% block title %} {{ title }} {% endblock %}
+{% block content %}
+    <div class="wrapper profile_cards">
+        <div class="list_title">
+            {{ title }}
+        </div>
+        {% for friend in friends %}
+            <a href='{% url "profile" friend.user.username %}'>
+                <div class="">
+                    <div class=''>
+                        @{{ friend.user.username }}
+                    </div>
+                    <div class=''>
+                        {{ friend.bio }}
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'main_twitter/base.html' %}
+{% block title %} Search {% endblock %}
+{% block content %}
+    <div class="wrapper caption-container">
+        <form method="get">
+
+            <div class="input-group mb-3">
+                <input name="s" type="text" class="form-control" placeholder="Enter username"
+                       value="{{ search_str }}" aria-label="Recipient's username" aria-describedby="button-addon2">
+                <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Find</button>
+            </div>
+        </form>
+        {% for us in people %}
+            <div class="">
+                <div class="">
+                    <a href="{% url 'profile' user_name=us.user.username %}" class="">@{{ us.user.username }}</a>
+
+
+                </div>
+                <div class="">
+                    {{ us.status }}
+                </div>
+                {% if not us.user.username in friends_name %}
+                    <a href="{% url 'add_friend' us.user.username %}" class="">Подписаться</a>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}

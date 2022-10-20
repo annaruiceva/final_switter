@@ -1,0 +1,148 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<style>
+    .vertical-tab-container {
+        z-index: 10;
+        background-color: #ffffff;
+        padding: 0 !important;
+        border-radius: 4px;
+        -moz-border-radius: 4px;
+        border: 1px solid #ddd;
+        background-clip: padding-box;
+        opacity: 0.97;
+        filter: alpha(opacity=97);
+    }
+
+    .vertical-tab-menu {
+        padding-right: 0;
+        padding-left: 0;
+        padding-bottom: 0;
+    }
+
+    .vertical-tab-menu div.list-group {
+        margin-bottom: 0;
+    }
+
+    .vertical-tab-menu div.list-group > a {
+        margin-bottom: 0;
+    }
+
+    .vertical-tab-menu div.list-group > a .glyphicon,
+    .vertical-tab-menu div.list-group > a .fa { /* font-awesome only */
+        color: #5A55A3;
+    }
+
+    .vertical-tab-menu div.list-group > a:first-child {
+        border-top-right-radius: 0;
+        -moz-border-top-right-radius: 0;
+    }
+
+    .vertical-tab-menu div.list-group > a:last-child {
+        border-bottom-right-radius: 0;
+        -moz-border-bottom-right-radius: 0;
+    }
+
+    .vertical-tab-menu div.list-group > a.active,
+    .vertical-tab-menu div.list-group > a.active .glyphicon,
+    .vertical-tab-menu div.list-group > a.active .fa {
+        background-color: #5A55A3;
+        background-image: #5A55A3;
+        color: #ffffff;
+    }
+
+    .vertical-tab-menu div.list-group > a.active:after {
+        content: '';
+        position: absolute;
+        left: 100%;
+        top: 50%;
+        margin-top: -13px;
+        border-left: 0;
+        border-bottom: 13px solid transparent;
+        border-top: 13px solid transparent;
+        border-left: 10px solid #5A55A3;
+    }
+
+    .vertical-tab-content {
+        background-color: #ffffff;
+    }
+
+    .vertical-tab div.vertical-tab-content:not(.active) {
+        display: none;
+    }
+</style>
+
+<div class="container">
+    <div class="row">
+
+        <div class="col-md-8 col-md-offset-2 vertical-tab-container">
+
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 vertical-tab-menu">
+                <div class="list-group">
+                    <a href="#" class="list-group-item active text-center">
+                        <h4 class="glyphicon glyphicon-star"></h4>
+                        <br>BootstrapTema
+                    </a>
+                    <a href="#" class="list-group-item text-center">
+                        <h4 class="glyphicon glyphicon-picture"></h4>
+                        <br>Images
+                    </a>
+                    <a href="#" class="list-group-item text-center">
+                        <h4 class="glyphicon glyphicon-home"></h4>
+                        <br>Home
+                    </a>
+                    <a href="#" class="list-group-item text-center">
+                        <h4 class="glyphicon glyphicon-apple"></h4>
+                        <br>Apple
+                    </a>
+                    <a href="#" class="list-group-item text-center">
+                        <h4 class="glyphicon glyphicon-menu-hamburger"></h4>
+                        <br>Bootstrap
+                    </a>
+                </div><!-- /.list-group -->
+            </div><!-- /.vertical-tab-menu -->
+
+            <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 vertical-tab">
+
+                <div class="vertical-tab-content active text-center">
+                    <br/><img src="https://bootstraptema.ru/logo.png" class="img-responsive" alt="BootstrapTema"/>
+                </div>
+
+                <div class="vertical-tab-content text-center">
+                    <br/><img src="https://bootstraptema.ru/images/demo/1920x1080/demo7.jpg" class="img-responsive"
+                              alt="Demo image"/>
+                </div>
+
+                <div class="vertical-tab-content text-center">
+                    <br/><a href="https://bootstraptema.ru/" target="_blank"><img
+                        src="https://bootstraptema.ru/logo.png" class="img-responsive" alt="BootstrapTema"/></a>
+                </div>
+
+                <div class="vertical-tab-content text-center">
+                    <h1 class="glyphicon glyphicon-thumbs-down" style="font-size:12em;color:#55518a"></h1>
+                </div>
+
+                <div class="vertical-tab-content text-center">
+                    <h1 class="glyphicon glyphicon-thumbs-up" style="font-size:12em;color:#55518a"></h1>
+                </div>
+
+            </div><!-- /.vertical-tab -->
+
+        </div><!-- /.vertical-tab-container -->
+
+    </div>
+</div><!-- /.container&row -->
+
+<script>
+    $(document).ready(function () {
+        $(".vertical-tab-menu>.list-group>a").click(function (e) {
+            e.preventDefault();
+            $(this).siblings('a.active').removeClass("active");
+            $(this).addClass("active");
+            var index = $(this).index();
+            $(".vertical-tab>.vertical-tab-content").removeClass("active");
+            $(".vertical-tab>.vertical-tab-content").eq(index).addClass("active");
+        });
+    });
+</script>

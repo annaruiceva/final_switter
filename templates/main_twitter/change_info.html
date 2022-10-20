@@ -1,0 +1,71 @@
+{% extends 'main_twitter/base.html' %}
+{% block title %} Change info {% endblock %}
+{% block content %}
+    <div class="wrapper">
+
+        {#     {%  if error %}#}
+        {#        <p>{{error}}</p>#}
+        {#    {% endif %}#}
+        {% if user_form.errors %}
+            {% for key, value in user_form.errors.items %}
+                {{ value }}
+            {% endfor %}
+        {% endif %}
+
+        <form method="post" action="{% url 'change_info' %}">
+            <div class="form-group">
+                {% csrf_token %}
+
+
+{#                Email:#}
+{#                {{ user_form.email }}#}
+
+
+                {#        Change Password#}
+
+{#                Change Status:#}
+{#                {{ profile_form.status }}#}
+{##}
+{#                About: {{ profile_form.about }}#}
+
+{#                <a href="{% url 'change_info' %}" class="change_data">Save Changes</a>#}
+
+                <label > Username:</label>
+                {{ user_form.username }}
+            </div>
+
+            <div class="form-group">
+                <label >About</label>
+                {{ profile_form.about }}
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form>
+
+
+        {#        Reset#}
+        <form class="change_form" action="{% url 'change_info' %}" method="post">
+            {% csrf_token %}
+            <p class="">Username</p>
+            <input class="new_username" type="text" name='new_username' value="{{ user.username }}"/>
+            <button class="button_change" type="submit">Change</button>
+        </form>
+
+        <form class="" action="{% url 'home' %}" method="post">
+            {% csrf_token %}
+            <p class="">About</p>
+            <input class="new_about" type="text" name='new_bio' value="{{ user.profile.about }}"/>
+            <button class="button_change" type="submit">Подтвердить</button>
+        </form>
+
+        <form class="change_bio" action="{% url 'home' %}" method="post">
+            {% csrf_token %}
+            <p class="">Status</p>
+
+            <input class="new_status" type="text" name='new_bio' value="{{ user.profile.status }}"/>
+            <button class="button_change" type="submit">Подтвердить</button>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'main_twitter/base.html' %}
+{% load i18n %}
+
+{% block content %}
+    <div class="row">
+        <p>{% translate 'Your link is invalid, please login again.' %}</p>
+        <a href="{% url 'login' %}">Try again </a>
+    </div>
+{% endblock %}
