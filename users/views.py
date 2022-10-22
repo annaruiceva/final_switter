@@ -8,6 +8,7 @@ from django.utils.http import urlsafe_base64_decode
 from django.views import View
 
 from main_twitter import models
+from main_twitter.views import settings
 from users.forms import UserCreationForm
 from users.utils import send_email_for_verify
 from django.contrib.auth.tokens import default_token_generator as token_generator
@@ -35,6 +36,7 @@ def profile2(request, user_name):
 
 
 def profile(request, user_name):
+    # print(request.META.get('HTTP_REFERER'))
     info = {
         "cur_user": User.objects.all().get(username=user_name),
         "own": False,
@@ -52,6 +54,7 @@ def profile(request, user_name):
     info["subs"] = info["cur_user"].profile.subs.all()
     info["subs_num"] = str(len(info["subs"]))
     info["about"] = info["cur_user"].profile.about
+    info["status"] = info["cur_user"].profile.status
 
     if request.user.is_authenticated and request.user.username == user_name:
         info["own"] = True
@@ -60,7 +63,7 @@ def profile(request, user_name):
         for fr in request.user.profile.friends.all():
             if fr.user.username == user_name:
                 info["sub"] = True
-    print(info)
+    # print(info)
     return render(request, 'registration/profile.html', info)
 
 
@@ -110,13 +113,6 @@ class Register(View):
             form.save()
             email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password1')
-
-            # user = authenticate(email=email, password=password)
-            # print(user)
-            # print(user.username, user.pk)
-
-            # login(request, user)
-            # return redirect('home')
             send_email_for_verify(request, user)
             return redirect('email_confirm')
         context = {

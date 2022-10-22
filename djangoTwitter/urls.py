@@ -19,12 +19,15 @@ from django.contrib.staticfiles.urls import static
 from django.urls import path, include
 from django.views.generic import TemplateView
 
+from main_twitter import views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', TemplateView.as_view(template_name='main_twitter/home.html'), name='home'),
+    # path('', TemplateView.as_view(template_name='main_twitter/home.html'), name='home'),
+    path('', views.show_home_twitt, name='home'),
     path('users/', include('users.urls')),
     path('', include('main_twitter.urls')),
-
+    path('capcha/', include('captcha.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

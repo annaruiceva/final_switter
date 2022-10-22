@@ -9,6 +9,7 @@ User = get_user_model()
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='user_img/%Y/%m/%d/', default='user_img/1.jpg', blank=True)
     status = models.CharField(max_length=30, blank=True)
     about = models.CharField(max_length=200, blank=True)
 
@@ -19,16 +20,6 @@ class Profile(models.Model):
         return 'Profile for user {}'.format(self.user.username)
 
 
-# class Post(models.Model):
-#     """
-#     Post model
-#     :author: reference to Post author
-#     :text: Post text
-#     :date: time when the post was created
-#     """
-#     author = models.ForeignKey('Profile', on_delete=models.CASCADE)
-#     text = models.CharField(max_length=500)
-#     date = models.IntegerField(blank=True, default=0)
 class Twitts(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
     # для FAKER

@@ -22,14 +22,15 @@ class UpdateUserForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['username', 'email']
+        fields = ('username', 'email', 'first_name', 'last_name')
 
 
 class UpdateProfileForm(forms.ModelForm):
     # avatar = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control-file'}))
     about = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
     status = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
+    image = forms.ImageField(required=False)
 
     class Meta:
         model = Profile
-        fields = ['about', 'status']
+        fields = ['about', 'status', 'image']

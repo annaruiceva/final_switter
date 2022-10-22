@@ -1,30 +1,36 @@
 {% extends 'main_twitter/base.html' %}
 {% block title %} Search {% endblock %}
+{% load static %}
+
 {% block content %}
-    <div class="wrapper caption-container">
-        <form method="get">
+    <link href="{% static 'main_twitter/css/friends.css' %}" rel="stylesheet"/>
 
-            <div class="input-group mb-3">
-                <input name="s" type="text" class="form-control" placeholder="Enter username"
-                       value="{{ search_str }}" aria-label="Recipient's username" aria-describedby="button-addon2">
-                <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Find</button>
-            </div>
-        </form>
-        {% for us in people %}
-            <div class="">
-                <div class="">
-                    <a href="{% url 'profile' user_name=us.user.username %}" class="">@{{ us.user.username }}</a>
+    <div class="wrapper profile_cards">
+        <div class="wrapper caption-container ">
+            <form method="get">
 
-
+                <div class="input-group mb-3">
+                    <input name="s" type="text" class="post_text" placeholder="Enter username"
+                           value="{{ search_str }}" aria-label="Recipient's username">
+                    <button class="btn button_create_post" type="submit" id="button-addon2">Find</button>
                 </div>
-                <div class="">
-                    {{ us.status }}
+            </form>
+            {% for us in people %}
+                <div class="name_card">
+                    <div class="username">
+                        <a href="{% url 'profile' user_name=us.user.username %}" class="">@{{ us.user.username }}</a>
+
+
+                    </div>
+                    <div class="">
+                        {{ us.status }}
+                    </div>
+                    {% if not us.user.username in friends_name %}
+                        <a href="{% url 'add_friend' us.user.username %}" class="">Подписаться</a>
+                    {% endif %}
                 </div>
-                {% if not us.user.username in friends_name %}
-                    <a href="{% url 'add_friend' us.user.username %}" class="">Подписаться</a>
-                {% endif %}
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
     </div>
 
 {% endblock %}

@@ -4,10 +4,20 @@
     {%  if form.errors %}
         <p>{{ form.errors.error }}</p>
     {% endif %}
-    <form action=" {% url 'login' %}" method="post">
+    <form action=" {% url 'login' %}" method="post" >
         {% csrf_token %}
-        {{ form }}
-        <button type="submit" class="btn btn-success">Submit</button>
+         {% for field in form %}
+                    <p>
+                        {{ field.label_tag }}<br>
+                        {{ field }}
+                        {% if field.help_text %}
+                            <small style="display: block ">{{ field.help_text }}</small>
+                        {% endif %}
+                        {% for error in field.errors %}
+                            <p style="color: red">{{ error }}</p>
+                        {% endfor %}
+                    </p>
+                {% endfor %}        <button type="submit" class="btn btn-success">Submit</button>
     </form>
     <a href="{% url 'password_reset' %}">Forgot password?</a>
 {% endblock %}

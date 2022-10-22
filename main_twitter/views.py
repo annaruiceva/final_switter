@@ -5,11 +5,9 @@ from django.db import transaction
 from django.db.models import Q
 from django.http import HttpResponseNotAllowed, HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import render, redirect
-
 # Create your views here.
 from django.urls import reverse
 from django.views import View
-from django.views.generic import DeleteView
 
 from main_twitter import models
 from main_twitter.forms import CreatePostForm, UpdateUserForm, UpdateProfileForm
@@ -18,7 +16,12 @@ from main_twitter.models import Twitts
 User = get_user_model()
 
 
-#
+def show_home_twitt(request):
+    info = {"twitts": list(models.Twitts.objects.all().order_by('-create_date'))}
+    print(info)
+    return render(request, 'main_twitter/home.html', info)
+
+
 # class TwittDeleteView(LoginRequiredMixin, DeleteView):
 #     model = models.Twitts
 #     success_url = '/profile'
@@ -31,7 +34,7 @@ User = get_user_model()
 # friend.profile.save()
 def delete_twitt(request, pk):
     if request.method == 'POST':
-        if request.user.is_authenticated:
+        if request.user.is_authenticated and request.user.username == models.Twitts.objects.get(id=pk).author:
             try:
                 models.Twitts.objects.get(id=pk).delete()
                 return redirect('profile', request.user.username)
@@ -69,6 +72,7 @@ def show_people(request):
     info["friends_name"] = info["user"].profile.friends.all().values_list('user__username', flat=True)
     # print(q_people.query)
     print(request.GET.get('s'))
+
     if request.GET.get('s'):
         print(request.GET.get('s'))
         s = request.GET['s']
@@ -93,7 +97,10 @@ def add_friend(request, username):
         user.profile.save()
         friend.profile.subs.add(user.profile)
         friend.profile.save()
-        return redirect('profile', request.user.username)
+        print(request.META.get('HTTP_REFERER'))
+        if 'search_people' in str(request.META.get('HTTP_REFERER')):
+            return redirect('search_people')
+        return redirect('profile', username)
     return redirect('home')
 
 
@@ -168,8 +175,6 @@ def change_info(request):
         else:
             print('invalid--------')
             messages.success(request, 'Your profile is not updated')
-            user_form = UpdateUserForm(instance=request.user)
-            profile_form = UpdateProfileForm(instance=request.user.profile)
 
         return render(request, 'main_twitter/change_info.html', {'user_form': user_form, 'profile_form': profile_form})
 
@@ -204,6 +209,8 @@ class AddLike(LoginRequiredMixin, View):
         if is_like:
             twitt.likes.remove(profile)
 
+        if str(request.META.get('HTTP_REFERER')).count('/') == 3:
+            return HttpResponseRedirect(reverse('home'))
         return HttpResponseRedirect(reverse('profile', args=[user]))
 
 
@@ -213,6 +220,7 @@ class AddDislike(LoginRequiredMixin, View):
         twitt = Twitts.objects.get(pk=pk)
         user = twitt.author.user.username
         print(user, twitt.author, '-----------------')
+
         profile = request.user.profile
 
         is_like = False
@@ -237,5 +245,6 @@ class AddDislike(LoginRequiredMixin, View):
 
         if is_dislike:
             twitt.dislikes.remove(profile)
-
+        if str(request.META.get('HTTP_REFERER')).count('/') == 3:
+            return HttpResponseRedirect(reverse('home'))
         return HttpResponseRedirect(reverse('profile', args=[user]))
