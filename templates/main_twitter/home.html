@@ -1,10 +1,10 @@
 {% extends 'main_twitter/base.html' %}
-{% block title %} Home {% endblock %}
+{% block title %} News {% endblock %}
 {% load static %}
 
 {% block content %}
-    <p  class="list-group-item text-center"> News </p>
-{#        <link href="{% static 'main_twitter/css/profile.css' %}" rel="stylesheet"/>#}
+    <p class="list-group-item text-center"> News </p>
+    {#        <link href="{% static 'main_twitter/css/profile.css' %}" rel="stylesheet"/>#}
     <link href="{% static 'main_twitter/css/friends.css' %}" rel="stylesheet"/>
 
     <div class="card text-dark bg-light mb-3">
@@ -14,7 +14,8 @@
 
                 <div class="card">
                     <div class="badge rounded-pill bg-info text-dark">
-                            <a href="{% url 'profile' user_name=twitt.author.user.username %}" style="color: #1b1b1b">  @{{ twitt.author.user.username }}</a>
+                        <a href="{% url 'profile' user_name=twitt.author.user.username %}" style="color: #1b1b1b">
+                            @{{ twitt.author.user.username }}</a>
 
                     </div>
                     <div>
@@ -26,30 +27,45 @@
 
 
                     <div class="btn-group" role="group" aria-label="Basic outlined example">
+
                         <form method="post" style="float: left;" action="{% url 'like' twitt.pk %}">
                             {% csrf_token %}
-                            {#              <div style="margin-top: 10px; width: 30px; height: 30px; margin-left: 950px;">#}
                             <input type="hidden" name="text" value="{{ request.path }}">
-                            <button class=" btn glyphicon glyphicon-thumbs-up" type="submit">
-                                <span>{{ twitt.likes.all.count }}</span>
 
-                            </button>
+                            {% if request.user.profile in twitt.likes.all %}
+                                <button class=" btn glyphicon glyphicon-thumbs-up active" type="submit">
+                                    <span>{{ twitt.likes.all.count }}</span></button>
+                            {% else %}
+                                <button class=" btn glyphicon glyphicon-thumbs-up " type="submit">
+                                    <span>{{ twitt.likes.all.count }}</span></button>
+
+                            {% endif %}
+
 
                         </form>
 
 
-                        <form method="post" style="clear: right;  margin-right: 20px; "
+                        <form method="post" style="float: left;  margin-right: 20px; "
                               action="{% url 'dislike' twitt.pk %}">
                             {% csrf_token %}
-                            {#              <div style="margin-top: -30px; width: 30px; height: 30px; margin-left: 980px;">#}
                             <input type="hidden" name="text" value="{{ request.path }}">
-                            <button type="submit" style="background: transparent; border: none; box-shadow: none;"
-                                    class="btn  glyphicon glyphicon-thumbs-down">
-                                <span>{{ twitt.dislikes.all.count }}</span>
 
-                            </button>
+                            {% if  request.user.profile  in twitt.dislikes.all %}
+                                <button class=" btn glyphicon glyphicon-thumbs-down active" type="submit">
+                                    <span>{{ twitt.dislikes.all.count }}</span></button>
+                            {% else %}
+                                <button class=" btn glyphicon glyphicon-thumbs-down " type="submit">
+                                    <span>{{ twitt.dislikes.all.count }}</span></button>
+
+                            {% endif %}
 
                         </form>
+                        <div method="post" >
+                            {% csrf_token %}
+                            <a style="float: left;  color: #1b1b1b" class=" btn glyphicon glyphicon-comment " type="submit" href="{% url 'comments' twitt.pk %}"></a>
+
+                        </div>
+
                     </div>
 
 

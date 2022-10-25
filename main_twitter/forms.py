@@ -4,7 +4,7 @@ from django.contrib.auth.forms import (
     UserCreationForm as DjangoUserCreationForm)
 from django.utils.translation import gettext_lazy as _
 
-from main_twitter.models import Profile
+from main_twitter.models import Profile, Comment
 
 User = get_user_model()
 
@@ -29,8 +29,17 @@ class UpdateProfileForm(forms.ModelForm):
     # avatar = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control-file'}))
     about = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
     status = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
-    image = forms.ImageField(required=False)
+    image = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class': 'form-control-file'}))
+    # image = forms.ImageField(required=False)
 
     class Meta:
         model = Profile
         fields = ['about', 'status', 'image']
+
+
+class CreateCommentForm(forms.ModelForm):
+    text = forms.CharField()
+
+    class Meta:
+        model = Comment
+        fields = ['text',]

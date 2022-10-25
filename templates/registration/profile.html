@@ -1,5 +1,5 @@
 {% extends 'main_twitter/base.html' %}
-{% block title %} Home {% endblock %}
+{% block title %} Profile {% endblock %}
 {% load static %}
 
 {% block content %}
@@ -11,10 +11,15 @@
                 <div class="username">
                     {% if cur_user.profile.image %}
                         <br>
-                        @{{ cur_user.username }}
 
-                        <img src="{{ cur_user.profile.image.url }}" class="my-img-round2">
-                        {{ cur_user.first_name }} {{ cur_user.last_name }}
+                        <div style="float: left;   margin-right: 20px;">
+                            <img src="{{ cur_user.profile.image.url }}" class="my-img-round2">
+                        </div>
+
+                        <div style="clear: right;  margin-right: 20px;">
+                            {{ cur_user.first_name }} {{ cur_user.last_name }}<br>
+                            @{{ cur_user.username }}
+                        </div>
 
                     {% endif %}
 
@@ -103,38 +108,52 @@
 
                             </div>
 
-
                             <div class="btn-group" role="group" aria-label="Basic outlined example">
-
 
                                 <form method="post" style="float: left;" action="{% url 'like' twitt.pk %}">
                                     {% csrf_token %}
                                     <input type="hidden" name="text" value="{{ request.path }}">
-                                    <button class=" btn glyphicon glyphicon-thumbs-up" type="submit">
-                                        <span>{{ twitt.likes.all.count }}</span>
 
-                                    </button>
+                                    {% if request.user.profile in twitt.likes.all %}
+                                        <button class=" btn glyphicon glyphicon-thumbs-up active" type="submit">
+                                            <span>{{ twitt.likes.all.count }}</span></button>
+                                    {% else %}
+                                        <button class=" btn glyphicon glyphicon-thumbs-up " type="submit">
+                                            <span>{{ twitt.likes.all.count }}</span></button>
+
+                                    {% endif %}
 
 
                                 </form>
 
 
-                                <form method="post" style="clear: right;  margin-right: 20px; "
+                                <form method="post" style="float: left;  margin-right: 20px; "
                                       action="{% url 'dislike' twitt.pk %}">
                                     {% csrf_token %}
                                     <input type="hidden" name="text" value="{{ request.path }}">
-                                    <button type="submit"
-                                            style="background: transparent; border: none; box-shadow: none;"
-                                            class="btn  glyphicon glyphicon-thumbs-down">
-                                        <span>{{ twitt.dislikes.all.count }}</span>
 
-                                    </button>
+                                    {% if  request.user.profile  in twitt.dislikes.all %}
+                                        <button class=" btn glyphicon glyphicon-thumbs-down active" type="submit">
+                                            <span>{{ twitt.dislikes.all.count }}</span></button>
+                                    {% else %}
+                                        <button class=" btn glyphicon glyphicon-thumbs-down " type="submit">
+                                            <span>{{ twitt.dislikes.all.count }}</span></button>
+
+                                    {% endif %}
 
                                 </form>
+                                <div method="post">
+                                    {% csrf_token %}
+                                    <a style="float: left;  color: #1b1b1b" class=" btn glyphicon glyphicon-comment "
+                                       type="submit" href="{% url 'comments' twitt.pk %}"></a>
+
+                                </div>
+
                             </div>
 
 
                         </div>
+
 
                         <div class="card-text">
                             {{ twitt.create_date }}

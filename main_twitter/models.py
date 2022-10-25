@@ -21,14 +21,15 @@ class Profile(models.Model):
 
 
 class Twitts(models.Model):
-    create_date = models.DateTimeField(auto_now_add=True)
+    # create_date = models.DateTimeField(auto_now_add=True)
     # для FAKER
-    # date = models.DateTimeField()
+    create_date = models.DateTimeField()
 
     text = RichTextField(max_length=300)
     author = models.ForeignKey('Profile', on_delete=models.CASCADE)
     likes = models.ManyToManyField('Profile', blank=True, related_name='likes')
     dislikes = models.ManyToManyField('Profile', blank=True, related_name='dislikes')
+
     def __str__(self):
         return self.text
 
@@ -42,3 +43,16 @@ def create_profile(sender, instance, created, **kwargs):
             user=instance,
         )
     print('create_profile, **kwargs: ', kwargs)
+
+
+class Comment(models.Model):
+    author = models.ForeignKey('Profile', on_delete=models.CASCADE)
+    twitt = models.ForeignKey('Twitts', related_name='comments', on_delete=models.CASCADE)
+    text = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ('created',)
+
+    def __str__(self):
+        return 'Comment by {} on {}'.format(self.author, self.twitt)

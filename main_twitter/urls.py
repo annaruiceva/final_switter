@@ -19,6 +19,9 @@ from django.urls import path, include
 from main_twitter import views
 
 urlpatterns = [
+    path('fake/users', views.fake_create_user, name='create_users'),
+    path('fake/twitts', views.fake_create_twitts, name='create_twitts'),
+
     path('create_post/', views.create_twitt, name="create_post"),
     path('search_people/', views.show_people, name="search_people"),
     path('add_friend/<str:username>/', views.add_friend, name='add_friend'),
@@ -29,7 +32,10 @@ urlpatterns = [
     path("change_info/", views.change_info, name='change_info'),
     path('delete/<int:pk>', views.delete_twitt, name='delete_twitt'),
     path('<int:pk>/like/', views.AddLike.as_view(), name='like'),
-    path('<int:pk>/dislike/', views.AddDislike.as_view(), name='dislike')
+    path('<int:pk>/dislike/', views.AddDislike.as_view(), name='dislike'),
+    path('comments/<int:pk>/', views.show_comments, name='comments'),
+    path('create_comment/<int:pk>/', views.create_comment, name='create_comment'),
+
     # path('', include('main_twitter.urls'))
 
 ]

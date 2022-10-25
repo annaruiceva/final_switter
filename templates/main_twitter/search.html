@@ -8,7 +8,7 @@
     <div class="wrapper profile_cards">
         <div class="wrapper caption-container ">
             <form method="get">
-
+                <br>
                 <div class="input-group mb-3">
                     <input name="s" type="text" class="post_text" placeholder="Enter username"
                            value="{{ search_str }}" aria-label="Recipient's username">
@@ -18,6 +18,8 @@
             {% for us in people %}
                 <div class="name_card">
                     <div class="username">
+                        <img src="{{ us.image.url }}" class="my-img-round">
+
                         <a href="{% url 'profile' user_name=us.user.username %}" class="">@{{ us.user.username }}</a>
 
 

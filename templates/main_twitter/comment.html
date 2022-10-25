@@ -1,0 +1,68 @@
+{% extends 'main_twitter/base.html' %}
+{% block title %} Comments {% endblock %}
+{% load static %}
+
+{% block content %}
+    <p class="list-group-item text-center"> Comments </p>
+    {#        <link href="{% static 'main_twitter/css/profile.css' %}" rel="stylesheet"/>#}
+    <link href="{% static 'main_twitter/css/friends.css' %}" rel="stylesheet"/>
+    {#{% csrf_token %}#}
+    <div class="card text-dark bg-light mb-3">
+        <div class="card-body">
+
+
+            <div class="card">
+                <div class="badge rounded-pill bg-info text-dark">
+                    <a href="{% url 'profile' user_name=twitt.author.user.username %}" style="color: #1b1b1b">
+                        @{{ twitt.author.user.username }}</a>
+                </div>
+                <div class="display-5">
+                    ***{{ twitt.text }}
+                </div>
+            </div>
+
+            <div class="card-text">
+                {{ twitt.create_date }}
+            </div>
+            <br>
+            <div class="card">
+                <div class="alert alert-primary">
+                    Комментарии
+                </div>
+
+                {% for comment in comments %}
+
+                    <div class="card">
+                        <div class="badge rounded-pill bg text-dark">
+                            <a href="{% url 'profile' user_name=twitt.author.user.username %}" style="color: #1b1b1b">
+                                Comment from @{{ comment.author.user.username }}</a>
+                        </div>
+                        <div class=" display-6">
+                            <div class="glyphicon glyphicon-align-justify">
+
+                            </div>
+                            {{ comment.text }}
+                        </div>
+                    </div>
+
+                    <div class="card-text">
+                        {{ comment.create }}
+                    </div>
+
+                    <div class="card-text">
+                        {{ twitt.create_date }}
+                    </div>
+                {% endfor %}
+            </div>
+            <br>
+            <form action="{% url 'create_comment' twitt.pk %}" method="post" class="create_post">
+                {% csrf_token %}
+                <input type="text" name="text" placeholder="Введите текст" class="post_text">
+                <button type="submit" value="Написать" class="button_create_post">Добавить комментарий</button>
+                <br> <br>
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

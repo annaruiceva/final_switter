@@ -10,16 +10,75 @@ from django.urls import reverse
 from django.views import View
 
 from main_twitter import models
-from main_twitter.forms import CreatePostForm, UpdateUserForm, UpdateProfileForm
-from main_twitter.models import Twitts
+from main_twitter.forms import CreatePostForm, UpdateUserForm, UpdateProfileForm, CreateCommentForm
+from main_twitter.models import Twitts, Profile
+from faker import Faker
 
 User = get_user_model()
 
+def fake_create_user(request):
+    f = Faker('ru-RU')
+    for i in range(10):
+        print(i)
+        p = f.profile()
+        User.objects.create(
+            username=p['username'],
+            email=p['mail'],
+            password=f.password(length=8)
+        )
+    return redirect('/')
+
+
+def fake_create_twitts(request):
+    f = Faker('ru-RU')
+    profiles = Profile.objects.all()
+    for p in profiles:
+        models.Twitts.objects.bulk_create(
+            [
+                models.Twitts(
+                    text=f.sentence(nb_words=5),
+                    create_date=f.date_time_between(),
+                    author=p
+                ) for _ in range(10)
+            ]
+        )
+        print(p.user.username)
+    return redirect('/')
 
 def show_home_twitt(request):
     info = {"twitts": list(models.Twitts.objects.all().order_by('-create_date'))}
     print(info)
     return render(request, 'main_twitter/home.html', info)
+
+
+def show_comments(request, pk):
+    twitt = Twitts.objects.get(pk=pk)
+    print(twitt.pk)
+    info = {"twitt": twitt}
+    info['comments'] = list(models.Comment.objects.all().filter(twitt=info['twitt']))
+
+    print(info)
+    return render(request, 'main_twitter/comment.html', info)
+
+
+def create_comment(request, pk):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            comment_form = CreateCommentForm(request.POST)
+            twitt = models.Twitts.objects.get(id=pk)
+            if comment_form.is_valid():
+                # user_profile = User.objects.all().get(username=request.user.username).profile
+                # comment = user_profile.comment_set.create(
+                #     text=request.POST["text"])
+                # user_profile.save()
+                # comment.save()
+                new_comment = comment_form.save(commit=False)
+                new_comment.twitt = twitt
+                new_comment.author = request.user.profile
+                new_comment.save()
+            else:
+                comment_form = CreateCommentForm()
+    return redirect('comments', pk)
 
 
 # class TwittDeleteView(LoginRequiredMixin, DeleteView):
@@ -34,12 +93,12 @@ def show_home_twitt(request):
 # friend.profile.save()
 def delete_twitt(request, pk):
     if request.method == 'POST':
-        if request.user.is_authenticated and request.user.username == models.Twitts.objects.get(id=pk).author:
-            try:
-                models.Twitts.objects.get(id=pk).delete()
-                return redirect('profile', request.user.username)
-            except models.Twitts.DoesNotExist:
-                return HttpResponseNotFound(request)
+        # if request.user.is_authenticated and request.user.username == models.Twitts.objects.get(id=pk).author:
+        try:
+            models.Twitts.objects.get(id=pk).delete()
+            return redirect('profile', request.user.username)
+        except models.Twitts.DoesNotExist:
+            return HttpResponseNotFound(request)
 
     else:
         return HttpResponseNotAllowed(request)
@@ -50,11 +109,11 @@ def create_twitt(request):
         if request.method == 'POST':
             user_form = CreatePostForm(request.POST)
             if user_form.is_valid():
-                u = User.objects.all().get(username=request.user.username).profile
-                p = u.twitts_set.create(
+                user = User.objects.all().get(username=request.user.username).profile
+                profile = user.twitts_set.create(
                     text=request.POST["text"])
-                u.save()
-                p.save()
+                user.save()
+                profile.save()
     return redirect('profile', request.user.username)
 
 
@@ -248,3 +307,7 @@ class AddDislike(LoginRequiredMixin, View):
         if str(request.META.get('HTTP_REFERER')).count('/') == 3:
             return HttpResponseRedirect(reverse('home'))
         return HttpResponseRedirect(reverse('profile', args=[user]))
+
+
+
+
